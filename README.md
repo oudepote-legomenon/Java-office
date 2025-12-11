@@ -1,5 +1,7 @@
 # Java Office - Word Processor
 
+![Main Window](../Docs/Images/Mainwindow.png)
+
 A feature-rich word processing application built with Java Swing and the Radiance UI framework. This modern text editor provides a Microsoft Word-like experience with advanced formatting capabilities, spell checking, and document management features.
 
 ![Java](https://img.shields.io/badge/Java-23-orange)
@@ -198,14 +200,10 @@ This project is licensed under the GNU General Public License v3.0 - see the LIC
 - [ ] Export to PDF format
 - [ ] Image manipulation
 - [ ] Custom shapes and drawing tools
-- [ ] Collaboration features
 - [ ] More document templates
-- [ ] Enhanced table features
-- [ ] Track changes and commenting
-
-## Screenshots
-
-
+- [ ] Table features 
+- [ ] Track changes
+- [ ] Among others, God willing
 
 ## Contact
 
@@ -214,4 +212,3 @@ For questions or support, please open an issue on GitHub.
 ---
 
 Built with ❤️ using Java and Swing
-
