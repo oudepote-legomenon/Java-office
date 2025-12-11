@@ -65,7 +65,7 @@ Powered by Radiance Theming with multiple skins:
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/java-office.git
+   git clone https://github.com/oudepote-legomenon/java-office.git
    cd java-office
    ```
 
@@ -196,17 +196,16 @@ This project is licensed under the GNU General Public License v3.0 - see the LIC
 ## Roadmap
 
 - [ ] Export to PDF format
-- [ ] Advanced image manipulation
+- [ ] Image manipulation
 - [ ] Custom shapes and drawing tools
 - [ ] Collaboration features
-- [ ] Cloud storage integration
 - [ ] More document templates
-- [ ] Enhanced table features (merge cells, styling)
+- [ ] Enhanced table features
 - [ ] Track changes and commenting
 
 ## Screenshots
 
-*Add screenshots of your application here*
+
 
 ## Contact
 
@@ -215,3 +214,4 @@ For questions or support, please open an issue on GitHub.
 ---
 
 Built with ❤️ using Java and Swing
+
