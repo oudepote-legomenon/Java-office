@@ -1,6 +1,6 @@
 # Java Office - Word Processor
 
-![Main Window](../Docs/Images/Mainwindow.png)
+![Main Window](Docs/Images/Mainwindow.png)
 
 A feature-rich word processing application built with Java Swing and the Radiance UI framework. This modern text editor provides a Microsoft Word-like experience with advanced formatting capabilities, spell checking, and document management features.
 
