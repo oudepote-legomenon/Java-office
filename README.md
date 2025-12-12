@@ -87,24 +87,6 @@ Powered by Radiance Theming with multiple skins:
 
 ## Usage
 
-### Running Demos
-
-The project includes several demonstration classes:
-
-```bash
-# Main word processor application
-mvn exec:java -Dexec.mainClass="com.oudepotelegomenon.App"
-
-# Spell checker demo
-mvn exec:java -Dexec.mainClass="com.oudepotelegomenon.SpellCheckDemo"
-
-# Table editor demo
-mvn exec:java -Dexec.mainClass="com.oudepotelegomenon.TextEditorWithTables"
-
-# Rectangular shading demo
-mvn exec:java -Dexec.mainClass="com.oudepotelegomenon.RectangularShadingDemo"
-```
-
 ### Basic Operations
 
 - **Create New Document**: File → New → Blank Document
@@ -118,17 +100,42 @@ mvn exec:java -Dexec.mainClass="com.oudepotelegomenon.RectangularShadingDemo"
 ## Project Structure
 
 ```
-java-word/
-├── src/main/java/com/oudepotelegomenon/
-│   ├── App.java                      # Main application
-│   ├── SpellCheckDemo.java           # Spell checker demonstration
-│   ├── TextEditorWithTables.java    # Table editing demo
-│   ├── PagedEditorKit.java           # Custom editor kit
-│   ├── PagePainter.java              # Page rendering
-│   ├── WrapEditorKit.java            # Text wrapping
-│   └── transcodedIcons/              # SVG icons as Java classes
-├── src/main/resources/i18n/          # Internationalization bundles
-└── pom.xml                           # Maven configuration
+Java-office/
+├── java-word/                        # Main application module
+│   ├── pom.xml                       # Maven configuration
+│   ├── src/
+│   │   ├── main/
+│   │   │   ├── java/com/oudepotelegomenon/
+│   │   │   │   ├── App.java                    # Main word processor application
+│   │   │   │   ├── App2.java                   # Alternative application entry point
+│   │   │   │   ├── Main.java                   # Application launcher
+│   │   │   │   ├── PagedEditorKit.java         # Custom editor kit for paged documents
+│   │   │   │   ├── PagePainter.java            # Page rendering and painting logic
+│   │   │   │   ├── WrapEditorKit.java          # Text wrapping implementation
+│   │   │   │   ├── Experiments/                # Feature prototypes and testing
+│   │   │   │   │   ├── README.md               # Experiments documentation
+│   │   │   │   │   ├── SpellCheckDemo.java     # Spell/grammar checker prototype
+│   │   │   │   │   └── TextEditorWithTables.java  # Table editing prototype
+│   │   │   │   └── transcodedIcons/            # SVG icons converted to Java classes
+│   │   │   │       ├── Accessories_text_editor.java
+│   │   │   │       ├── bold.java
+│   │   │   │       ├── copy.java
+│   │   │   │       └── ... (100+ icon classes)
+│   │   │   └── resources/
+│   │   │       └── i18n/                       # Internationalization resource bundles
+│   │   │           ├── MessagesBundle_en_US.properties
+│   │   │           ├── MessagesBundle_es_ES.properties
+│   │   │           ├── MessagesBundle_ko_KR.properties
+│   │   │           ├── MessagesBundle_ar_AR.properties
+│   │   │           └── MessagesBundle_lg_UG.properties
+│   │   └── test/java/                          # Unit tests
+│   └── target/                                 # Compiled classes and build artifacts
+├── Docs/
+│   └── Images/                                 # Documentation screenshots
+│       ├── Mainwindow.png
+│       └── Errorcheck.png
+├── LICENSE                                     # GPL-3.0 License
+└── README.md                                   # This file
 ```
 
 ## Key Components
@@ -140,16 +147,6 @@ The primary word processor with:
 - Comprehensive text formatting tools
 - Multi-page document handling
 - Application menu with recent documents
-
-### Spell Checker (SpellCheckDemo.java)
-Standalone spell checking demo featuring:
-- Real-time spell checking
-- Grammar and style suggestions
-- Right-click context menu with corrections
-- Color-coded error highlighting
-
-### Table Editor (TextEditorWithTables.java)
-Demonstrates embedding editable tables in documents.
 
 ## Configuration
 
