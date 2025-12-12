@@ -107,8 +107,6 @@ Java-office/
 │   │   ├── main/
 │   │   │   ├── java/com/oudepotelegomenon/
 │   │   │   │   ├── App.java                    # Main word processor application
-│   │   │   │   ├── App2.java                   # Alternative application entry point
-│   │   │   │   ├── Main.java                   # Application launcher
 │   │   │   │   ├── PagedEditorKit.java         # Custom editor kit for paged documents
 │   │   │   │   ├── PagePainter.java            # Page rendering and painting logic
 │   │   │   │   ├── WrapEditorKit.java          # Text wrapping implementation
