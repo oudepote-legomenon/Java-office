@@ -28,8 +28,8 @@ A feature-rich word processing application built with Java Swing and the Radianc
 - Increase/decrease font size
 
 ### 📋 Advanced Features
-- **Spell Checking**: Integrated spell checker with real-time suggestions using LanguageTool
-- **Tables**: Insert and edit tables within documents
+- **Spell Checking**: Integrated spell checker with real-time suggestions using LanguageTool.
+  ![Main Window](Docs/Images/Errorcheck.png)
 - **Lists**: Bulleted, numbered, and checkbox lists
 - **Document Import/Export**: Support for DOCX format via Apache POI
 - **Print Support**: Print documents with preview
