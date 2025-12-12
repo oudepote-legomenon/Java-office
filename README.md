@@ -80,6 +80,10 @@ Powered by Radiance Theming with multiple skins:
    ```bash
    mvn exec:java -Dexec.mainClass="com.oudepotelegomenon.App"
    ```
+   OR
+   ```bash
+      mvn exec:java --define exec.mainClass=com.oudepotelegomenon.App
+   ```
 
 ## Usage
 
