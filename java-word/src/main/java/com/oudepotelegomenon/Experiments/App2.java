@@ -1,4 +1,4 @@
-package com.oudepotelegomenon;
+package com.oudepotelegomenon.Experiments;
 
 import javax.swing.*;
 import javax.swing.text.*;
@@ -14,6 +14,8 @@ import org.pushingpixels.radiance.theming.api.RadianceThemingCortex;
 import org.pushingpixels.radiance.theming.api.skin.DustCoffeeSkin;
 
 import com.oudepotelegomenon.transcodedIcons.*; // icon package
+import com.oudepotelegomenon.PagedEditorKit;
+import com.oudepotelegomenon.PagePainter;
 
 public class App2 {
     public static void main(String[] args) {

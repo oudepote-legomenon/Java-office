@@ -6,7 +6,7 @@ import java.awt.*;
 /**
  * A component that paints page outlines behind a JTextPane to give a paginated appearance.
  */
-class PagePainter extends JComponent {
+public class PagePainter extends JComponent {
     private final JTextPane textPane;
     private final int pageWidth = 595;
     private final int pageHeight = 842;
