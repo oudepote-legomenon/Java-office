@@ -7,6 +7,12 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.*;
 
 import org.apache.poi.xwpf.usermodel.IBodyElement;
+import org.languagetool.JLanguageTool;
+import org.languagetool.Languages;
+import org.languagetool.language.AmericanEnglish;
+import org.languagetool.rules.RuleMatch;
+import java.io.IOException;
+
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
@@ -67,7 +73,130 @@ import java.util.function.Consumer;
 import com.oudepotelegomenon.transcodedIcons.*; // icon package
 
 public class App {
-    public static Locale locale = Locale.forLanguageTag("ko-KR");
+    /**
+     * Manages spell and grammar checking in the background.
+     */
+    private static class SpellCheckerService {
+        private final JLanguageTool langTool;
+        private final Timer checkTimer;
+        private boolean isRunning = false;
+
+        public SpellCheckerService() {
+            this.langTool = new JLanguageTool(Languages.getLanguageForShortCode("en-US"));
+            // Timer to delay checking until the user stops typing
+            this.checkTimer = new Timer(1000, e -> checkAllPages());
+            this.checkTimer.setRepeats(false);
+        }
+
+        public void start() {
+            if (!isRunning) {
+                isRunning = true;
+                triggerCheck(getFocusedPage());
+            }
+        }
+
+        public void stop() {
+            if (isRunning) {
+                isRunning = false;
+                checkTimer.stop();
+                clearAllHighlights();
+            }
+        }
+
+        public void triggerCheck(JTextPane page) {
+            if (isRunning && page != null) {
+                checkTimer.restart();
+            }
+        }
+
+        private void checkAllPages() {
+            if (!isRunning) return;
+
+            totalMistakes = 0;
+            errorsMap.clear();
+
+            for (JTextPane page : pages) {
+                Highlighter highlighter = page.getHighlighter();
+                highlighter.removeAllHighlights();
+                try {
+                    String text = page.getDocument().getText(0, page.getDocument().getLength());
+                    List<RuleMatch> matches = langTool.check(text);
+                    errorsMap.put(page, matches);
+                    totalMistakes += matches.size();
+
+                    for (RuleMatch match : matches) {
+                        Highlighter.HighlightPainter painter;
+                        // Check if it's a spelling error
+                        if (match.getRule().isDictionaryBasedSpellingRule()) {
+                            painter = SPELLING_ERROR_PAINTER;
+                        } else {
+                            painter = GRAMMAR_ERROR_PAINTER;
+                        }
+                        highlighter.addHighlight(match.getFromPos(), match.getToPos(), painter);
+                    }
+                } catch (IOException | BadLocationException e) {
+                    e.printStackTrace();
+                }
+            }
+            updateStatus();
+        }
+
+        private void clearAllHighlights() {
+            for (JTextPane page : pages) {
+                page.getHighlighter().removeAllHighlights();
+            }
+            totalMistakes = 0;
+            errorsMap.clear();
+            updateStatus();
+        }
+    }
+
+    /**
+     * A custom highlight painter for drawing wavy underlines for spelling errors.
+     */
+    private static class UnderlineHighlightPainter implements Highlighter.HighlightPainter {
+        private final Color color;
+
+        public UnderlineHighlightPainter(Color color) {
+            this.color = color;
+        }
+
+        @Override
+        public void paint(Graphics g, int p0, int p1, Shape bounds, JTextComponent c) {
+            try {
+                Rectangle r0 = c.modelToView(p0);
+                Rectangle r1 = c.modelToView(p1);
+                if (r0 == null || r1 == null) return;
+
+                g.setColor(color);
+                int y = r0.y + r0.height - 1;
+
+                // If the highlight spans multiple lines, draw a line for each
+                if (r0.y == r1.y) {
+                    // Single line
+                    drawWavyLine(g, r0.x, y, r1.x, y);
+                } else {
+                    // Multiple lines
+                    drawWavyLine(g, r0.x, y, (int) bounds.getBounds().getMaxX(), y); // First line
+                    for (int lineY = y + c.getFontMetrics(c.getFont()).getHeight(); lineY < r1.y; lineY += c.getFontMetrics(c.getFont()).getHeight()) {
+                        drawWavyLine(g, (int) bounds.getBounds().getMinX(), lineY, (int) bounds.getBounds().getMaxX(), lineY); // Middle lines
+                    }
+                    drawWavyLine(g, (int) bounds.getBounds().getMinX(), r1.y + r1.height - 1, r1.x, r1.y + r1.height - 1); // Last line
+                }
+            } catch (BadLocationException e) {
+                // Do nothing
+            }
+        }
+
+        private void drawWavyLine(Graphics g, int x1, int y, int x2, int y2) {
+            for (int x = x1; x < x2; x += 4) {
+                g.drawArc(x, y, 2, 2, 0, 180);
+                g.drawArc(x + 2, y, 2, 2, 180, 181);
+            }
+        }
+    }
+
+    public static Locale locale = Locale.forLanguageTag("en-US");
     public static ResourceBundle bundle = ResourceBundle.getBundle("i18n.MessagesBundle", locale);
     private static JPanel pagesPanel;
     private static JScrollPane scrollPane;
@@ -85,6 +214,14 @@ public class App {
     private static int bulkEditDepth = 0;
     private static boolean isBackspaceMergeInProgress = false;
     private static boolean isUpdatingFontSizeUI = false;
+
+    // --- Spell check --- //
+    private static SpellCheckerService spellCheckerService;
+    private static final Highlighter.HighlightPainter SPELLING_ERROR_PAINTER = new UnderlineHighlightPainter(Color.RED);
+    private static final Highlighter.HighlightPainter GRAMMAR_ERROR_PAINTER = new UnderlineHighlightPainter(Color.BLUE);
+    private static final Map<JTextPane, List<RuleMatch>> errorsMap = new HashMap<>();
+    private static int totalMistakes = 0;
+
 
     //--- Spell check---//
     public static Command spellCheckCommand;
@@ -132,6 +269,11 @@ public class App {
 
     // --- footer "option" Command on the application menu ---//
     public static Command optionsCommand;
+
+    // --- Taskbar Commands--------------//
+    public static Command undoCommand;
+    public static Command redoCommand;
+
 
     // --- Ribbon commands---//
     public static Command formatPainterCommand;
@@ -202,6 +344,7 @@ public class App {
     private static Color originalColor;
     private static boolean isPreviewing = false;
     private static Color originalHighlightColor;
+
     private static boolean isFillPreviewing = false;
 
 
@@ -213,11 +356,14 @@ public class App {
                                 new Color(128,128,128), new Color(192,192,192)
                         };
     public static void main(String[] args) throws Exception {
+        // Initialize the spell checker service
+        spellCheckerService = new SpellCheckerService();
+
         SwingUtilities.invokeLater(() -> {
             JFrame.setDefaultLookAndFeelDecorated(false);
             RadianceThemingCortex.GlobalScope.setSkin(new BusinessBlueSteelSkin());
 
-            final JRibbonFrame mainFrame = new JRibbonFrame("Curiosity Word Pad");
+            final JRibbonFrame mainFrame = new JRibbonFrame("Curiosity Word");
             // ----------------------- Application menu starts here ------------------------------------//
             blankDocumentCommand = Command.builder()
                     .setText(bundle.getString("cmd.blankDocument"))
@@ -644,7 +790,29 @@ public class App {
 
          mainFrame.getRibbon().setApplicationMenuCommand(applicationMenuCommandButtonProjection);
          //---------------------------Application Menu Button ends here-----------------------------//
+            //----------------------------- Quick access toolbar------------------------------------------//
+            undoCommand = Command.builder()
+                    .setText(bundle.getString("taskbar.undo"))
+                    .setIconFactory(icons8_undo_50.factory())
+                    .setAction(CommandActionEvent -> comingSoonDialog(mainFrame))
+                    .build();
 
+            redoCommand = Command.builder()
+                    .setText(bundle.getString("taskbar.undo"))
+                    .setIconFactory(icons8_redo_50.factory())
+                    .setAction(CommandActionEvent -> comingSoonDialog(mainFrame))
+                    .build();
+
+            saveCommand = Command.builder()
+                    .setText(bundle.getString("taskbar.save"))
+                    .setIconFactory(save1.factory())
+                    .setAction(e -> saveAs(mainFrame))
+                    .build();
+
+            mainFrame.getRibbon().addTaskbarCommand(saveCommand.project());
+            mainFrame.getRibbon().addTaskbarCommand(undoCommand.project());
+            mainFrame.getRibbon().addTaskbarCommand(redoCommand.project());
+        
         //----------------------------- HOME RIBBON TASK -------------------------------------------------------//
         
          // ---------------------------- Clipboard Band -------------------------------------------//
@@ -2600,6 +2768,14 @@ public class App {
                 .build()
             );
 
+            spellCheckCommand.setAction(e -> {
+                if (spellCheckCommand.isToggleSelected()) {
+                    spellCheckerService.start();
+                } else {
+                    spellCheckerService.stop();
+                }
+            });
+
             JPanel statusBar = new JPanel(new FlowLayout(FlowLayout.LEFT));
             statusLabel = new JLabel("1/1 | Words: 0");
             statusBar.setBorder(new BevelBorder(BevelBorder.LOWERED));
@@ -2672,7 +2848,7 @@ public class App {
             currentPage = 1;
         int totalPages = pages.size();
         int totalWords = getWordCount();
-    statusLabel.setText("   " + bundle.getString("statusBar.pages") + ": " + currentPage + "/" + totalPages + " | " + bundle.getString("status.words") + ": " + totalWords + " | " + bundle.getString("statusBar.mistakes") + ": 0 " + "|");
+    statusLabel.setText("   " + bundle.getString("statusBar.pages") + ": " + currentPage + "/" + totalPages + " | " + bundle.getString("status.words") + ": " + totalWords + " | " + bundle.getString("statusBar.mistakes") + ": " + totalMistakes + " |");
     }
 
     private static int getWordCount() {
@@ -2775,6 +2951,7 @@ public class App {
             public void focusGained(java.awt.event.FocusEvent e) {
                 lastFocusedPage = page;
                 updateStatus();
+                spellCheckerService.triggerCheck(page);
             }
         });
 
@@ -2783,17 +2960,21 @@ public class App {
                 if (bulkEditDepth == 0) {
                     updateStatus();
                     checkPageOverflow(page);
+                    spellCheckerService.triggerCheck(page);
                 }
             }
 
             public void removeUpdate(javax.swing.event.DocumentEvent e) {
                 if (bulkEditDepth == 0)
                     updateStatus();
+                    spellCheckerService.triggerCheck(page);
             }
 
             public void changedUpdate(javax.swing.event.DocumentEvent e) {
-                if (bulkEditDepth == 0)
+                if (bulkEditDepth == 0) {
                     updateStatus();
+                    spellCheckerService.triggerCheck(page);
+                }
             }
         });
 
@@ -2812,6 +2993,10 @@ public class App {
                         copiedAttributes = null;
                         setFormatPainterCursor(false);
                     }
+                }
+
+                if (e.isPopupTrigger()) {
+                    showSuggestionMenu(e, page);
                 }
             }
         });
@@ -3052,6 +3237,13 @@ public class App {
                     }
                 }
             }
+
+            //@Override
+            public void mousePressed(java.awt.event.MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    showSuggestionMenu(e, page);
+                }
+            }
         });
 
         // Override default Ctrl+A behavior to select text across all pages
@@ -3064,6 +3256,46 @@ public class App {
         page.getInputMap().put(KeyStroke.getKeyStroke("control A"), "selectAllAcrossPages");
         page.getActionMap().put("selectAllAcrossPages", globalSelectAllAction);
         return page;
+    }
+
+    private static void showSuggestionMenu(java.awt.event.MouseEvent e, JTextPane page) {
+        int pos = page.viewToModel2D(e.getPoint());
+        List<RuleMatch> errors = errorsMap.get(page);
+        if (errors == null) return;
+
+        RuleMatch clickedError = null;
+        for (RuleMatch error : errors) {
+            if (pos >= error.getFromPos() && pos <= error.getToPos()) {
+                clickedError = error;
+                break;
+            }
+        }
+
+        if (clickedError != null) {
+            final RuleMatch finalClickedError = clickedError;
+            JPopupMenu popupMenu = new JPopupMenu();
+            List<String> suggestions = clickedError.getSuggestedReplacements();
+
+            if (suggestions.isEmpty()) {
+                JMenuItem noSuggestions = new JMenuItem("No suggestions");
+                noSuggestions.setEnabled(false);
+                popupMenu.add(noSuggestions);
+            } else {
+                for (String suggestion : suggestions) {
+                    JMenuItem item = new JMenuItem(suggestion);
+                    item.addActionListener(actionEvent -> {
+                        try {
+                            page.getDocument().remove(finalClickedError.getFromPos(), finalClickedError.getToPos() - finalClickedError.getFromPos());
+                            page.getDocument().insertString(finalClickedError.getFromPos(), suggestion, null);
+                        } catch (BadLocationException ex) {
+                            ex.printStackTrace();
+                        }
+                    });
+                    popupMenu.add(item);
+                }
+            }
+            popupMenu.show(page, e.getX(), e.getY());
+        }
     }
 
     private static void selectAllText() {
