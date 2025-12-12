@@ -1,4 +1,4 @@
-package com.oudepotelegomenon;
+package com.oudepotelegomenon.Experiments;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.List;

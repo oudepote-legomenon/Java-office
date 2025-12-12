@@ -1,4 +1,4 @@
-package com.oudepotelegomenon;
+package com.oudepotelegomenon.Experiments;
 
 import javax.swing.*;
 import javax.swing.text.*;
