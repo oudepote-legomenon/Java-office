@@ -29,7 +29,7 @@ A feature-rich word processing application built with Java Swing and the Radianc
 
 ### 📋 Advanced Features
 - **Spell Checking**: Integrated spell checker with real-time suggestions using LanguageTool.
-  ![Main Window](Docs/Images/Errorcheck.png)
+  ![Spell and Grammar check](Docs/Images/Errorcheck.png)
 - **Lists**: Bulleted, numbered, and checkbox lists
 - **Document Import/Export**: Support for DOCX format via Apache POI
 - **Print Support**: Print documents with preview
