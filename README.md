@@ -129,7 +129,7 @@ Java-office/
 │   │   └── test/java/                          # Unit tests
 │   └── target/                                 # Compiled classes and build artifacts
 ├── Docs/
-│   └── Images/                                 # Documentation 
+│   └── Images/                                 # Documentation screenshots
 │       ├── Mainwindow.png
 │       └── Errorcheck.png
 ├── LICENSE                                     # GPL-3.0 License
