@@ -31,12 +31,15 @@ public class App2 {
 
             PagePainter pagePainter = new PagePainter(textPane);
 
+            JPanel contentPanel = new JPanel(new BorderLayout());
+
             JLayeredPane layeredPane = new JLayeredPane();
-            layeredPane.setLayout(new BorderLayout());
             layeredPane.add(pagePainter, JLayeredPane.DEFAULT_LAYER);
             layeredPane.add(textPane, JLayeredPane.PALETTE_LAYER);
 
-            JScrollPane scrollPane = new JScrollPane(layeredPane);
+            contentPanel.add(layeredPane, BorderLayout.CENTER);
+
+            JScrollPane scrollPane = new JScrollPane(contentPanel);
             scrollPane.getVerticalScrollBar().setUnitIncrement(20);
             scrollPane.getViewport().setBackground(new Color(200, 200, 200));
 

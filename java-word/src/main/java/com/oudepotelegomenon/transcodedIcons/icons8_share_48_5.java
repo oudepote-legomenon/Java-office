@@ -1,4 +1,4 @@
-package resources.icons;
+package com.oudepotelegomenon.transcodedIcons;
 
 import java.awt.*;
 import java.awt.geom.*;
@@ -18,7 +18,7 @@ import org.pushingpixels.radiance.common.api.icon.RadianceIconUIResource;
  * This class has been automatically generated using <a
  * href="https://github.com/kirill-grouchnikov/radiance">Radiance SVG transcoder</a>.
  */
-public class icons8_share_48_(2) implements RadianceIcon {
+public class icons8_share_48_5 implements RadianceIcon {
     private Shape shape = null;
     private GeneralPath generalPath = null;
     private Paint paint = null;
@@ -131,7 +131,7 @@ if (image08d4e61cc84b89d0247baaaed403a5ef != null) {
 	 * Creates a new transcoded SVG image. This is marked as private to indicate that app
 	 * code should be using the {@link #of(int, int)} method to obtain a pre-configured instance.
 	 */
-	private icons8_share_48_(2)() {
+	private icons8_share_48_5() {
         this.width = (int) getOrigWidth();
         this.height = (int) getOrigHeight();
 	}
@@ -200,7 +200,7 @@ if (image08d4e61cc84b89d0247baaaed403a5ef != null) {
      * @return A new instance of this icon with specified dimensions.
      */
     public static RadianceIcon of(int width, int height) {
-       icons8_share_48_(2) base = new icons8_share_48_(2)();
+       icons8_share_48_5 base = new icons8_share_48_5();
        base.width = width;
        base.height = height;
        return base;
@@ -214,7 +214,7 @@ if (image08d4e61cc84b89d0247baaaed403a5ef != null) {
      * @return A new {@link UIResource} instance of this icon with specified dimensions.
      */
     public static RadianceIconUIResource uiResourceOf(int width, int height) {
-       icons8_share_48_(2) base = new icons8_share_48_(2)();
+       icons8_share_48_5 base = new icons8_share_48_5();
        base.width = width;
        base.height = height;
        return new RadianceIconUIResource(base);
@@ -226,7 +226,7 @@ if (image08d4e61cc84b89d0247baaaed403a5ef != null) {
      * @return Factory that returns instances of this icon on demand.
      */
     public static Factory factory() {
-        return icons8_share_48_(2)::new;
+        return icons8_share_48_5::new;
     }
 }
 

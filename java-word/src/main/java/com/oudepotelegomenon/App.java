@@ -49,9 +49,6 @@ import org.pushingpixels.radiance.component.api.ribbon.synapse.projection.Ribbon
 import org.pushingpixels.radiance.component.api.ribbon.synapse.projection.RibbonSpinnerProjection;
 import org.pushingpixels.radiance.theming.api.RadianceThemingCortex;
 import org.pushingpixels.radiance.theming.api.skin.BusinessBlueSteelSkin;
-import org.pushingpixels.radiance.theming.api.skin.DustCoffeeSkin;
-import org.pushingpixels.radiance.theming.extras.api.skinpack.OfficeBlue2007Skin;
-
 import java.awt.*;
 import java.awt.print.*;
 import java.io.FileInputStream;

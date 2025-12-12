@@ -37,7 +37,6 @@ public class PagedEditorKit extends StyledEditorKit {
      * A custom root view that lays out its children (paragraphs) into pages.
      */
     private static class PagedRootView extends BoxView {
-        private final int pageWidth = 595;
         private final int pageHeight = 842;
         private final int pageGap = 20;
         private final int marginTop = 70;

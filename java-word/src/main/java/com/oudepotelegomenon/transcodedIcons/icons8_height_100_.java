@@ -1,4 +1,4 @@
-package resources.icons;
+package com.oudepotelegomenon.transcodedIcons;
 
 import java.awt.*;
 import java.awt.geom.*;
@@ -18,7 +18,7 @@ import org.pushingpixels.radiance.common.api.icon.RadianceIconUIResource;
  * This class has been automatically generated using <a
  * href="https://github.com/kirill-grouchnikov/radiance">Radiance SVG transcoder</a>.
  */
-public class icons8_height_100_(1) implements RadianceIcon {
+public class icons8_height_100_ implements RadianceIcon {
     private Shape shape = null;
     private GeneralPath generalPath = null;
     private Paint paint = null;
@@ -134,7 +134,7 @@ if (imaged10857fba26007b99e13623fe9759b29 != null) {
 	 * Creates a new transcoded SVG image. This is marked as private to indicate that app
 	 * code should be using the {@link #of(int, int)} method to obtain a pre-configured instance.
 	 */
-	private icons8_height_100_(1)() {
+	private icons8_height_100_() {
         this.width = (int) getOrigWidth();
         this.height = (int) getOrigHeight();
 	}
@@ -203,7 +203,7 @@ if (imaged10857fba26007b99e13623fe9759b29 != null) {
      * @return A new instance of this icon with specified dimensions.
      */
     public static RadianceIcon of(int width, int height) {
-       icons8_height_100_(1) base = new icons8_height_100_(1)();
+       icons8_height_100_ base = new icons8_height_100_();
        base.width = width;
        base.height = height;
        return base;
@@ -217,7 +217,7 @@ if (imaged10857fba26007b99e13623fe9759b29 != null) {
      * @return A new {@link UIResource} instance of this icon with specified dimensions.
      */
     public static RadianceIconUIResource uiResourceOf(int width, int height) {
-       icons8_height_100_(1) base = new icons8_height_100_(1)();
+       icons8_height_100_ base = new icons8_height_100_();
        base.width = width;
        base.height = height;
        return new RadianceIconUIResource(base);
@@ -229,7 +229,7 @@ if (imaged10857fba26007b99e13623fe9759b29 != null) {
      * @return Factory that returns instances of this icon on demand.
      */
     public static Factory factory() {
-        return icons8_height_100_(1)::new;
+        return icons8_height_100_::new;
     }
 }
 
