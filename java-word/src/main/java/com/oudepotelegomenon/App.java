@@ -73,129 +73,7 @@ import java.util.function.Consumer;
 import com.oudepotelegomenon.transcodedIcons.*; // icon package
 
 public class App {
-    /**
-     * Manages spell and grammar checking in the background.
-     */
-    private static class SpellCheckerService {
-        private final JLanguageTool langTool;
-        private final Timer checkTimer;
-        private boolean isRunning = false;
-
-        public SpellCheckerService() {
-            this.langTool = new JLanguageTool(Languages.getLanguageForShortCode("en-US"));
-            // Timer to delay checking until the user stops typing
-            this.checkTimer = new Timer(1000, e -> checkAllPages());
-            this.checkTimer.setRepeats(false);
-        }
-
-        public void start() {
-            if (!isRunning) {
-                isRunning = true;
-                triggerCheck(getFocusedPage());
-            }
-        }
-
-        public void stop() {
-            if (isRunning) {
-                isRunning = false;
-                checkTimer.stop();
-                clearAllHighlights();
-            }
-        }
-
-        public void triggerCheck(JTextPane page) {
-            if (isRunning && page != null) {
-                checkTimer.restart();
-            }
-        }
-
-        private void checkAllPages() {
-            if (!isRunning) return;
-
-            totalMistakes = 0;
-            errorsMap.clear();
-
-            for (JTextPane page : pages) {
-                Highlighter highlighter = page.getHighlighter();
-                highlighter.removeAllHighlights();
-                try {
-                    String text = page.getDocument().getText(0, page.getDocument().getLength());
-                    List<RuleMatch> matches = langTool.check(text);
-                    errorsMap.put(page, matches);
-                    totalMistakes += matches.size();
-
-                    for (RuleMatch match : matches) {
-                        Highlighter.HighlightPainter painter;
-                        // Check if it's a spelling error
-                        if (match.getRule().isDictionaryBasedSpellingRule()) {
-                            painter = SPELLING_ERROR_PAINTER;
-                        } else {
-                            painter = GRAMMAR_ERROR_PAINTER;
-                        }
-                        highlighter.addHighlight(match.getFromPos(), match.getToPos(), painter);
-                    }
-                } catch (IOException | BadLocationException e) {
-                    e.printStackTrace();
-                }
-            }
-            updateStatus();
-        }
-
-        private void clearAllHighlights() {
-            for (JTextPane page : pages) {
-                page.getHighlighter().removeAllHighlights();
-            }
-            totalMistakes = 0;
-            errorsMap.clear();
-            updateStatus();
-        }
-    }
-
-    /**
-     * A custom highlight painter for drawing wavy underlines for spelling errors.
-     */
-    private static class UnderlineHighlightPainter implements Highlighter.HighlightPainter {
-        private final Color color;
-
-        public UnderlineHighlightPainter(Color color) {
-            this.color = color;
-        }
-
-        @Override
-        public void paint(Graphics g, int p0, int p1, Shape bounds, JTextComponent c) {
-            try {
-                Rectangle r0 = c.modelToView(p0);
-                Rectangle r1 = c.modelToView(p1);
-                if (r0 == null || r1 == null) return;
-
-                g.setColor(color);
-                int y = r0.y + r0.height - 1;
-
-                // If the highlight spans multiple lines, draw a line for each
-                if (r0.y == r1.y) {
-                    // Single line
-                    drawWavyLine(g, r0.x, y, r1.x, y);
-                } else {
-                    // Multiple lines
-                    drawWavyLine(g, r0.x, y, (int) bounds.getBounds().getMaxX(), y); // First line
-                    for (int lineY = y + c.getFontMetrics(c.getFont()).getHeight(); lineY < r1.y; lineY += c.getFontMetrics(c.getFont()).getHeight()) {
-                        drawWavyLine(g, (int) bounds.getBounds().getMinX(), lineY, (int) bounds.getBounds().getMaxX(), lineY); // Middle lines
-                    }
-                    drawWavyLine(g, (int) bounds.getBounds().getMinX(), r1.y + r1.height - 1, r1.x, r1.y + r1.height - 1); // Last line
-                }
-            } catch (BadLocationException e) {
-                // Do nothing
-            }
-        }
-
-        private void drawWavyLine(Graphics g, int x1, int y, int x2, int y2) {
-            for (int x = x1; x < x2; x += 4) {
-                g.drawArc(x, y, 2, 2, 0, 180);
-                g.drawArc(x + 2, y, 2, 2, 180, 181);
-            }
-        }
-    }
-
+    
     public static Locale locale = Locale.forLanguageTag("en-US");
     public static ResourceBundle bundle = ResourceBundle.getBundle("i18n.MessagesBundle", locale);
     private static JPanel pagesPanel;
@@ -355,6 +233,130 @@ public class App {
                                 new Color(0,255,255),   new Color(255,0,255),
                                 new Color(128,128,128), new Color(192,192,192)
                         };
+
+    /**
+     * Manages spell and grammar checking in the background.
+     */
+    private static class SpellCheckerService {
+        private final JLanguageTool langTool;
+        private final Timer checkTimer;
+        private boolean isRunning = false;
+
+        public SpellCheckerService() {
+            this.langTool = new JLanguageTool(Languages.getLanguageForShortCode("en-US"));
+            // Timer to delay checking until the user stops typing
+            this.checkTimer = new Timer(1000, e -> checkAllPages());
+            this.checkTimer.setRepeats(false);
+        }
+
+        public void start() {
+            if (!isRunning) {
+                isRunning = true;
+                triggerCheck(getFocusedPage());
+            }
+        }
+
+        public void stop() {
+            if (isRunning) {
+                isRunning = false;
+                checkTimer.stop();
+                clearAllHighlights();
+            }
+        }
+
+        public void triggerCheck(JTextPane page) {
+            if (isRunning && page != null) {
+                checkTimer.restart();
+            }
+        }
+
+        private void checkAllPages() {
+            if (!isRunning) return;
+
+            totalMistakes = 0;
+            errorsMap.clear();
+
+            for (JTextPane page : pages) {
+                Highlighter highlighter = page.getHighlighter();
+                highlighter.removeAllHighlights();
+                try {
+                    String text = page.getDocument().getText(0, page.getDocument().getLength());
+                    List<RuleMatch> matches = langTool.check(text);
+                    errorsMap.put(page, matches);
+                    totalMistakes += matches.size();
+
+                    for (RuleMatch match : matches) {
+                        Highlighter.HighlightPainter painter;
+                        // Check if it's a spelling error
+                        if (match.getRule().isDictionaryBasedSpellingRule()) {
+                            painter = SPELLING_ERROR_PAINTER;
+                        } else {
+                            painter = GRAMMAR_ERROR_PAINTER;
+                        }
+                        highlighter.addHighlight(match.getFromPos(), match.getToPos(), painter);
+                    }
+                } catch (IOException | BadLocationException e) {
+                    e.printStackTrace();
+                }
+            }
+            updateStatus();
+        }
+
+        private void clearAllHighlights() {
+            for (JTextPane page : pages) {
+                page.getHighlighter().removeAllHighlights();
+            }
+            totalMistakes = 0;
+            errorsMap.clear();
+            updateStatus();
+        }
+    }
+
+    /**
+     * A custom highlight painter for drawing wavy underlines for spelling errors.
+     */
+    private static class UnderlineHighlightPainter implements Highlighter.HighlightPainter {
+        private final Color color;
+
+        public UnderlineHighlightPainter(Color color) {
+            this.color = color;
+        }
+
+        @Override
+        public void paint(Graphics g, int p0, int p1, Shape bounds, JTextComponent c) {
+            try {
+                Rectangle r0 = c.modelToView(p0);
+                Rectangle r1 = c.modelToView(p1);
+                if (r0 == null || r1 == null) return;
+
+                g.setColor(color);
+                int y = r0.y + r0.height - 1;
+
+                // If the highlight spans multiple lines, draw a line for each
+                if (r0.y == r1.y) {
+                    // Single line
+                    drawWavyLine(g, r0.x, y, r1.x, y);
+                } else {
+                    // Multiple lines
+                    drawWavyLine(g, r0.x, y, (int) bounds.getBounds().getMaxX(), y); // First line
+                    for (int lineY = y + c.getFontMetrics(c.getFont()).getHeight(); lineY < r1.y; lineY += c.getFontMetrics(c.getFont()).getHeight()) {
+                        drawWavyLine(g, (int) bounds.getBounds().getMinX(), lineY, (int) bounds.getBounds().getMaxX(), lineY); // Middle lines
+                    }
+                    drawWavyLine(g, (int) bounds.getBounds().getMinX(), r1.y + r1.height - 1, r1.x, r1.y + r1.height - 1); // Last line
+                }
+            } catch (BadLocationException e) {
+                // Do nothing
+            }
+        }
+
+        private void drawWavyLine(Graphics g, int x1, int y, int x2, int y2) {
+            for (int x = x1; x < x2; x += 4) {
+                g.drawArc(x, y, 2, 2, 0, 180);
+                g.drawArc(x + 2, y, 2, 2, 180, 181);
+            }
+        }
+    }
+
     public static void main(String[] args) throws Exception {
         // Initialize the spell checker service
         spellCheckerService = new SpellCheckerService();
@@ -2784,6 +2786,7 @@ public class App {
 
             statusBar.add(
                 spellCheckCommand.project(CommandButtonPresentationModel.builder()
+                .setFocusable(false)
                 .setPresentationState(CommandButtonPresentationState.SMALL)
                 .build())
                 .buildComponent()
