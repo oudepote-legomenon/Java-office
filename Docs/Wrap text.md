@@ -838,3 +838,7 @@ When modifying text wrapping:
 7. Verify no horizontal scrollbars appear
 
 The wrapping system is foundational to the word processor's usability, so changes should preserve the core behavior while adding enhancements.
+
+---
+
+**[Next: Pagination →](Pagination.md)**

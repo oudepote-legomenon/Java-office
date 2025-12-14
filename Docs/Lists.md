@@ -468,3 +468,7 @@ The list implementation in Java-office uses a pragmatic, text-based approach tha
 - Provides a familiar user experience despite JTextPane's limitations
 
 While not as sophisticated as full-featured word processors, this implementation provides reliable, easy-to-maintain list functionality that integrates well with the rest of the application.
+
+---
+
+**[← Previous: Pagination](Pagination.md)** | **[Next: Spell Checker →](Spell%20checker.md)**

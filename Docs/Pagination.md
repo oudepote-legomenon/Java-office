@@ -740,3 +740,7 @@ When modifying pagination:
 7. Check performance with large documents
 
 The pagination system is foundational to the word processor, so changes should be thoroughly tested across different scenarios.
+
+---
+
+**[← Previous: Wrap Text](Wrap%20text.md)** | **[Next: Lists →](Lists.md)**

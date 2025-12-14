@@ -808,3 +808,7 @@ When modifying wavy underlines:
 7. Test with right-to-left languages (if supported)
 
 The wavy underline system is tightly coupled with spell checking, so coordinate changes with the `SpellCheckerService` documentation.
+
+---
+
+**[← Previous: Spell Checker](Spell%20checker.md)** | **[Back to Wrap Text →](Wrap%20text.md)**

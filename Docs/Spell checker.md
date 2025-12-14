@@ -1174,3 +1174,7 @@ When modifying spell check functionality:
 7. **Profile performance** with large documents
 
 The spell checker is a critical feature that users interact with constantly, so stability and performance are paramount.
+
+---
+
+**[← Previous: Lists](Lists.md)** | **[Next: Wavy Underline →](Wavy%20underline.md)**
