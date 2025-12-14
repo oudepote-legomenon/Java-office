@@ -192,7 +192,7 @@ This project is licensed under the GNU General Public License v3.0 - see the LIC
 - [Radiance](https://github.com/kirill-grouchnikov/radiance) - Modern Swing UI toolkit
 - [Apache POI](https://poi.apache.org/) - Java API for Microsoft Documents
 - [LanguageTool](https://languagetool.org/) - Open source proofreading software
-- SVG icons from various open-source contributors
+- SVG icons from various sources like [Icons8](icons8.com), [SVG Repo](svgrepo.com) among others 
 
 ## Roadmap
 
@@ -202,6 +202,8 @@ This project is licensed under the GNU General Public License v3.0 - see the LIC
 - [ ] More document templates
 - [ ] Table features 
 - [ ] Track changes
+- [ ] [Radiance](https://github.com/kirill-grouchnikov/radiance) Locale selector
+- [ ] [Radiance](https://github.com/kirill-grouchnikov/radiance) Theme selector
 - [ ] Among others, God willing
 
 ## Contact
